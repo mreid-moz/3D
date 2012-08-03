@@ -169,41 +169,45 @@ tube_inner_diameter=15;
 tube_inner_radius = tube_inner_diameter / 2;
 tube_thickness = 2;
 tube_outer_radius=tube_inner_radius + tube_thickness;
-cylinder_quality=50;
+cylinder_quality=40;
 base_inset_radius=tube_inner_radius - tube_thickness;
 
-union() {
-difference() {
-  cylinder (h=tube_height, r=tube_outer_radius, center=false, $fn=cylinder_quality);
-  cylinder (h=tube_height, r=tube_inner_radius, center=false, $fn=cylinder_quality);
-}
-difference() {
-  cylinder (h=tube_thickness, r=tube_outer_radius, center=false, $fn=cylinder_quality);
-  cylinder (h=tube_thickness, r=base_inset_radius, center=false, $fn=cylinder_quality);
-}
-
-}
 
 
- f=8.75;
+ f=9.1;
  fe=f+10;
  fh=30;
+ z = 0;
 
 module fletch()
 {
  color("blue") {
- polyhedron ( points = [[f, 0, 0], [f, tube_thickness, 0], [fe, tube_thickness, 0], 
-                        [fe, 0, 0], [f, 0, fh], [f, tube_thickness, fh]], 
+ translate([0,-1,0]) polyhedron ( points = [[f, z, z], [f, tube_thickness, z], [fe, tube_thickness, z], 
+                        [fe, z, z], [f, z, fh], [f, tube_thickness, fh]], 
               triangles = [[0,2,1], [0,3,2],  [0,4,3], [1,2,5],
-                           [2,4,5], [2,3,4]
+                           [2,4,5], [2,3,4], [0,1,5], [0,5,4]
   ]);
  }
 }
 
+
+union() {
+difference() {
+  cylinder (h=tube_height, r=tube_outer_radius, center=false, $fn=cylinder_quality);
+  translate([0,0,-1]) cylinder (h=tube_height+2, r=tube_inner_radius, center=false, $fn=cylinder_quality);
+}
+difference() {
+  cylinder (h=tube_thickness, r=tube_outer_radius, center=false, $fn=cylinder_quality);
+  translate([0,0,-1]) cylinder (h=tube_thickness+2, r=base_inset_radius, center=false, $fn=cylinder_quality);
+}
+}
+
 fletch();
+
 rotate ([0,0,90]) fletch();
 rotate ([0,0,180]) fletch();
 rotate ([0,0,270]) fletch();
+
 
 // Draw mini-fletch
 mf_top=tube_height-3;
@@ -212,18 +216,29 @@ mf_bottom=mf_top-8;
 polyhedron ( points = [[f, 0, mf_bottom], [f, tube_thickness, mf_bottom], [f+5, tube_thickness, mf_bottom], 
                         [f+5, 0, mf_bottom], [f, 0, mf_top], [f, tube_thickness, mf_top]], 
               triangles = [[0,2,1], [0,3,2],  [0,4,3], [1,2,5],
-                           [2,4,5], [2,3,4]
+                           [2,4,5], [2,3,4], [0,1,5], [0,5,4]
   ]);
+
 
 polyhedron ( points = [[f, 0, mf_bottom-8], [f, tube_thickness, mf_bottom-8], [f+5, tube_thickness, mf_bottom], 
                         [f+5, 0, mf_bottom], [f, 0, mf_top], [f, tube_thickness, mf_top]], 
               triangles = [[0,2,1], [0,3,2],  [0,4,3], [1,2,5],
-                           [2,4,5], [2,3,4]
+                           [2,4,5], [2,3,4], [0,1,5], [0,5,4]
   ]);
 
+skinny = (20/2) - (5* ((cos(30)*get_coarse_pitch(20))/8));
+
 difference() {
-translate([0,0,tube_height])
-  thread_out(20, 10);
-translate([0,0,tube_height])
-  cylinder (h=10, r=tube_inner_radius, center=false, $fn=cylinder_quality);
+  translate([0,0,tube_height])
+    cylinder(r1=tube_outer_radius, r2=skinny, h=2);
+  translate([0,0,tube_height])
+    cylinder(r=tube_inner_radius, h=2.5);
 }
+
+difference() {
+translate([0,0,tube_height+2])
+  thread_out(20, 10);
+translate([0,0,tube_height-5+2])
+  cylinder (h=20, r=tube_inner_radius, center=false, $fn=cylinder_quality);
+}
+
