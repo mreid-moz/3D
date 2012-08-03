@@ -173,6 +173,8 @@ cylinder_quality=40;
 base_inset_radius=tube_inner_radius - tube_thickness;
 
 
+line_guide_outer = 2;
+line_guide_inner = 1;
 
  f=9.1;
  fe=f+10;
@@ -193,8 +195,8 @@ module fletch()
 
 union() {
 difference() {
-  cylinder (h=tube_height, r=tube_outer_radius, center=false, $fn=cylinder_quality);
-  translate([0,0,-1]) cylinder (h=tube_height+2, r=tube_inner_radius, center=false, $fn=cylinder_quality);
+  cylinder (h=tube_height+10, r=tube_outer_radius, center=false, $fn=cylinder_quality);
+  translate([0,0,-1]) cylinder (h=tube_height+12, r=tube_inner_radius, center=false, $fn=cylinder_quality);
 }
 difference() {
   cylinder (h=tube_thickness, r=tube_outer_radius, center=false, $fn=cylinder_quality);
@@ -202,43 +204,70 @@ difference() {
 }
 }
 
-fletch();
+difference() {
+ fletch();
+ translate([tube_outer_radius+line_guide_outer-1.5,0,-0.5]) cylinder(h=fh+1, r=line_guide_inner, $fn=cylinder_quality);
+}
 
 rotate ([0,0,90]) fletch();
 rotate ([0,0,180]) fletch();
 rotate ([0,0,270]) fletch();
 
 
-// Draw mini-fletch
 mf_top=tube_height-3;
 mf_bottom=mf_top-8;
 
-polyhedron ( points = [[f, 0, mf_bottom], [f, tube_thickness, mf_bottom], [f+5, tube_thickness, mf_bottom], 
+// Draw mini-fletch
+module mini_fletch() {
+
+translate([0,-1,0]) {
+ polyhedron (points = [[f, 0, mf_bottom], [f, tube_thickness, mf_bottom], [f+5, tube_thickness, mf_bottom], 
                         [f+5, 0, mf_bottom], [f, 0, mf_top], [f, tube_thickness, mf_top]], 
               triangles = [[0,2,1], [0,3,2],  [0,4,3], [1,2,5],
                            [2,4,5], [2,3,4], [0,1,5], [0,5,4]
   ]);
 
 
-polyhedron ( points = [[f, 0, mf_bottom-8], [f, tube_thickness, mf_bottom-8], [f+5, tube_thickness, mf_bottom], 
+ polyhedron ( points = [[f, 0, mf_bottom-8], [f, tube_thickness, mf_bottom-8], [f+5, tube_thickness, mf_bottom], 
                         [f+5, 0, mf_bottom], [f, 0, mf_top], [f, tube_thickness, mf_top]], 
               triangles = [[0,2,1], [0,3,2],  [0,4,3], [1,2,5],
                            [2,4,5], [2,3,4], [0,1,5], [0,5,4]
   ]);
 
+}
+}
+
+/*
+difference() {
+ mini_fletch();
+ translate([tube_outer_radius+line_guide_outer-1.5,0,mf_bottom-15]) cylinder(h=fh, r=line_guide_inner, $fn=cylinder_quality);
+
+}
+*/
 skinny = (20/2) - (5* ((cos(30)*get_coarse_pitch(20))/8));
 
+/*
 difference() {
   translate([0,0,tube_height])
     cylinder(r1=tube_outer_radius, r2=skinny, h=2);
   translate([0,0,tube_height])
     cylinder(r=tube_inner_radius, h=2.5);
 }
+*/
 
+/*
+// Threads
 difference() {
 translate([0,0,tube_height+2])
   thread_out(20, 10);
 translate([0,0,tube_height-5+2])
   cylinder (h=20, r=tube_inner_radius, center=false, $fn=cylinder_quality);
+}
+*/
+
+
+translate([tube_outer_radius+line_guide_outer-1.5,0,0]) difference() {
+ cylinder(h=tube_height, r=line_guide_outer, $fn=cylinder_quality);
+ translate([0,0,-1]) cylinder(h=tube_height+2, r=line_guide_inner, $fn=cylinder_quality);
 }
 
