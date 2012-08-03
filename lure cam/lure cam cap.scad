@@ -162,8 +162,6 @@ module hex_bolt(dia,hi)
 	translate([0,0,hhi-0.1])	thread_out(dia,hi+0.1);
 }
 
-
-
 tube_height=70;
 tube_inner_diameter=15;
 tube_inner_radius = tube_inner_diameter / 2;
@@ -172,58 +170,37 @@ tube_outer_radius=tube_inner_radius + tube_thickness;
 cylinder_quality=50;
 base_inset_radius=tube_inner_radius - tube_thickness;
 
-union() {
-difference() {
-  cylinder (h=tube_height, r=tube_outer_radius, center=false, $fn=cylinder_quality);
-  cylinder (h=tube_height, r=tube_inner_radius, center=false, $fn=cylinder_quality);
-}
-difference() {
-  cylinder (h=tube_thickness, r=tube_outer_radius, center=false, $fn=cylinder_quality);
-  cylinder (h=tube_thickness, r=base_inset_radius, center=false, $fn=cylinder_quality);
-}
-
-}
-
 
  f=8.75;
  fe=f+10;
  fh=30;
 
-module fletch()
-{
- color("blue") {
- polyhedron ( points = [[f, 0, 0], [f, tube_thickness, 0], [fe, tube_thickness, 0], 
-                        [fe, 0, 0], [f, 0, fh], [f, tube_thickness, fh]], 
-              triangles = [[0,2,1], [0,3,2],  [0,4,3], [1,2,5],
-                           [2,4,5], [2,3,4]
-  ]);
- }
-}
 
-fletch();
-rotate ([0,0,90]) fletch();
-rotate ([0,0,180]) fletch();
-rotate ([0,0,270]) fletch();
+//hex_nut(20);
 
-// Draw mini-fletch
-mf_top=tube_height-3;
-mf_bottom=mf_top-8;
+//difference() {
+//  cylinder (h=10, r=12, center=false, $fn=cylinder_quality);
+//  thread_in(20, 10);
+//  cylinder (h=10, r=10, center=false, $fn=cylinder_quality);
+//}
 
-polyhedron ( points = [[f, 0, mf_bottom], [f, tube_thickness, mf_bottom], [f+5, tube_thickness, mf_bottom], 
-                        [f+5, 0, mf_bottom], [f, 0, mf_top], [f, tube_thickness, mf_top]], 
-              triangles = [[0,2,1], [0,3,2],  [0,4,3], [1,2,5],
-                           [2,4,5], [2,3,4]
-  ]);
+//translate([0,0,9]) cylinder (h=10, r=10.5, center=false, $fn=cylinder_quality);
 
-polyhedron ( points = [[f, 0, mf_bottom-8], [f, tube_thickness, mf_bottom-8], [f+5, tube_thickness, mf_bottom], 
-                        [f+5, 0, mf_bottom], [f, 0, mf_top], [f, tube_thickness, mf_top]], 
-              triangles = [[0,2,1], [0,3,2],  [0,4,3], [1,2,5],
-                           [2,4,5], [2,3,4]
-  ]);
+dia=20;
+hi = 13;
+
+	difference()
+	{
+		cylinder(r = 11,h = hi, $fn=cylinder_quality);
+		translate([0,0,-0.1])	cylinder(r = dia/2, h =hi + 0.2);
+	}
+	translate([0,0,0.1])	thread_in(dia,hi-0.2);
 
 difference() {
-translate([0,0,tube_height])
-  thread_out(20, 10);
-translate([0,0,tube_height])
-  cylinder (h=10, r=tube_inner_radius, center=false, $fn=cylinder_quality);
+  translate([0,0,hi])
+    cylinder(r1=11, r2=0, h=20);
+  translate([0,0,hi])
+    cylinder(r1=10, r2=0, h=12);
 }
+
+
