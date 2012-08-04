@@ -8,6 +8,9 @@ front_thickness = back_thickness;
 hole_radius = 26.5;
 small_offset = 130;
 hole_offset = small_offset - 35;
+saddle_base_width = 20;
+saddle_base_length = 60;
+saddle_base_height = 3;
 
 module body() {
  back();
@@ -51,9 +54,12 @@ module front() {
   translate([hole_offset,0,body_height-1])
    #cylinder(r=hole_radius, h=front_thickness+2);
  }
+ saddle();
 }
 
 module saddle() {
+ translate([saddle_base_width / -2, saddle_base_length / -2, body_height+front_thickness]) 
+  cube(size=[saddle_base_width, saddle_base_length, saddle_base_height]);
 }
 
 module sides() {
