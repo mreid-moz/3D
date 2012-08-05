@@ -1,14 +1,14 @@
 tube_height=70;
 tube_inner_diameter=15;
 tube_inner_radius = tube_inner_diameter / 2;
-tube_thickness = 1.95;
+tube_thickness = 1.9;
 tube_outer_radius=tube_inner_radius + tube_thickness;
 cylinder_quality=40;
-base_inset_radius=tube_inner_radius + 1;
-base_inset_depth=2;
+base_inset_radius=tube_inner_radius + 1.2;
+base_inset_depth=3;
+snitzel = 0.1;
 
-
-line_guide_outer = 2;
+line_guide_outer = 2.2;
 line_guide_inner = 1.2;
 
  f=9.1;
@@ -31,7 +31,7 @@ module fletch()
 difference() {
   cylinder (h=tube_height+10, r=tube_outer_radius, center=false, $fn=cylinder_quality);
   translate([0,0,-1]) cylinder (h=tube_height+12, r=tube_inner_radius, center=false, $fn=cylinder_quality);
-  translate([0,0,-1]) cylinder (h=base_inset_depth, r=base_inset_radius, center=false, $fn=cylinder_quality);
+  translate([0,0,-1]) cylinder (h=base_inset_depth+1, r=base_inset_radius, center=false, $fn=cylinder_quality);
 }
 
 
@@ -82,6 +82,18 @@ difference() {
 
  translate([tube_outer_radius+line_guide_outer-1.5,0,-1])
   cylinder(h=tube_height+2, r=line_guide_inner, $fn=cylinder_quality);
- translate([0,0,-1]) cylinder (h=base_inset_depth, r=base_inset_radius, center=false, $fn=cylinder_quality);
+ translate([0,0,-1]) cylinder (h=base_inset_depth+1, r=base_inset_radius, center=false, $fn=cylinder_quality);
 }
 
+module support(rot) {
+ rotate([0,0,rot]) translate([0,-0.25,0]) cube(size=[base_inset_radius, 0.5, base_inset_depth]);
+}
+
+support(0);
+support(45);
+support(90);
+support(135);
+support(180);
+support(225);
+support(270);
+support(315);
