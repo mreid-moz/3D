@@ -11,6 +11,15 @@ hole_offset = small_offset - 35;
 saddle_base_width = 20;
 saddle_base_length = 60;
 saddle_base_height = 3;
+neck_bottom_radius = body_height / 2;
+neck_top_radius = neck_bottom_radius * 0.65;
+neck_length = 150;
+neck_quality = 30;
+
+head_width = neck_top_radius * 2 + 10;
+head_length = small_radius;
+head_thickness = body_height * 0.2;
+head_angle = 15;
 
 module body() {
  back();
@@ -58,8 +67,9 @@ module front() {
 }
 
 module saddle() {
- translate([saddle_base_width / -2, saddle_base_length / -2, body_height+front_thickness]) 
+ color("green") translate([saddle_base_width / -2, saddle_base_length / -2, body_height+front_thickness]) 
   cube(size=[saddle_base_width, saddle_base_length, saddle_base_height]);
+
 }
 
 module sides() {
@@ -74,10 +84,27 @@ module sides() {
  }
 }
 
+module head() {
+ angle_distance = 2;
+ translate([neck_length + small_offset + small_radius - angle_distance, head_width * -0.5, body_height + front_thickness - head_thickness])
+  rotate([0,head_angle,0])
+   cube(size=[head_length, head_width, head_thickness]); 
+}
+
 module neck() {
+ rotate([0,90,0])
+  translate([-2*neck_bottom_radius - front_thickness,0,small_offset + small_radius])
+   difference() {
+    cylinder(r1=neck_bottom_radius, r2=neck_top_radius, h=neck_length, $fn=neck_quality);
+    translate([-2*neck_bottom_radius, -1*neck_bottom_radius, -1]) cube(size=[neck_bottom_radius * 2, neck_bottom_radius * 2, neck_length + 2]);
+   }
+
+ translate([small_offset + small_radius, 0, 0]) cylinder(r2=neck_bottom_radius, r1=neck_bottom_radius * 0.3, h=body_height + front_thickness);
 }
 
 module nut() {
 }
 
 body();
+neck();
+head();
