@@ -25,11 +25,28 @@ module handle() {
     cylinder(r=inner_radius-thickness-1, h=thickness+1, $fn=cq);
    }
 }
+
+
 difference() {
  union() {
   cylinder(r=outer_radius, h=outer_height, $fn=cq);
   handle();
+
+translate([-1*outer_radius - thickness / 2, 0, outer_height / 2])
+rotate([0,90,0])
+difference() {
+ cylinder(r=inner_radius / 3, h = outer_radius * 2 + thickness);
+ cylinder(r=inner_radius / 3 - 1, h = outer_radius * 2 + thickness);
+}
  }
  #translate([0,0,thickness]) cylinder(r=inner_radius, h=inner_height + 1, $fn=cq);
 }
 
+
+/*
+difference() {
+ translate([-1*outer_radius, 0,0]) scale(v=[0.25,0.25,0.25]) rotate([90,0,0]) linear_extrude(height = 100) import("oliver_text2.dxf");
+ cylinder(r=outer_radius, h=outer_height, $fn=cq);
+ cylinder(r=outer_radius+1, h=outer_height, $fn=cq);
+}
+*/
