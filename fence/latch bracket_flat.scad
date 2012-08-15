@@ -42,7 +42,7 @@ module screw_holes(rad, depth) {
 
 module bracket(wid, ht, dep) {
  difference() {
-  translate([-1 * tube_lg_rad - 1,-1 * dep,-0.5 * ht])
+  translate([-1 * tube_lg_rad,-1 * dep,-0.5 * ht])
    cube(size=[wid,dep,ht]);
   #tubes();
   #screw_holes(sh_rad, 51);
@@ -55,9 +55,9 @@ hole_dist = 28.6;
 module front() {
  difference() {
   bracket(bracket_width, bracket_height, bracket_depth);
-  #translate([-1*tube_lg_rad - 1, -1*bracket_depth, -0.5 * latch_height]) cube(size=[latch_width, latch_depth,latch_height]);
-  #screw_hole(sh_rad, 51);
-  translate([hole_dist,0,0]) screw_hole(sh_rad, 51);
+  #translate([-1*tube_lg_rad, -1*bracket_depth, -0.5 * latch_height]) cube(size=[latch_width, latch_depth,latch_height]);
+  //#screw_hole(sh_rad, 51);
+  //translate([hole_dist,0,0]) screw_hole(sh_rad, 51);
  }
 }
 
@@ -69,7 +69,8 @@ module back() {
 }
 
 //screw_hole();
-//front();
-// back:
 rotate([90,0,0])
-back();
+front();
+// back:
+//rotate([180,0,0])
+//back();
