@@ -8,19 +8,20 @@ front_thickness = back_thickness;
 hole_radius = 26.5;
 small_offset = 130;
 hole_offset = small_offset - 35;
-saddle_base_width = 20;
-saddle_base_length = 60;
-saddle_base_height = 3;
-neck_bottom_radius = body_height / 2;
-neck_top_radius = neck_bottom_radius * 0.65;
+saddle_base_width = 24;
+saddle_base_length = 80;
+saddle_base_height = 2;
+neck_bottom_radius = 21.35;
+neck_top_radius = 17.45;
 neck_length = 150;
 neck_quality = 30;
 
 head_width = neck_top_radius * 2 + 10;
 head_length = small_radius;
-head_thickness = body_height * 0.2;
+head_thickness = 11.5;
 head_angle = 15;
 
+fretboard_thickness = 4;
 module body() {
  back();
  front();
@@ -67,19 +68,30 @@ module front() {
 }
 
 module saddle() {
- color("green") translate([saddle_base_width / -2, saddle_base_length / -2, body_height+front_thickness]) 
-  cube(size=[saddle_base_width, saddle_base_length, saddle_base_height]);
+ color("green") {
+  translate([saddle_base_width / -2, saddle_base_length / -2, body_height+front_thickness])
+   cube(size=[saddle_base_width, saddle_base_length, saddle_base_height]);
+ }
+  translate([saddle_base_width / -2, 53 / -2, body_height+front_thickness])
+   cube(size=[9, 53, 7]);
+  translate([saddle_base_width / 2 - 3.3, 53 / -2, body_height+front_thickness])
+   cube(size=[3.3, 53, 7]);
 
+  difference() {
+   translate([saddle_base_width / -2 + 9, 53 / -2, body_height+front_thickness])
+    cube(size=[8.3, 53, 7]);
+   translate([saddle_base_width / -2 - 3, 53 / -2 - 1, body_height+front_thickness+8])
+    rotate([0,40,0]) 
+     cube(size=[15, 55, 15]);
+   
+  }
 }
 
 module sides() {
  difference() {
   uke_shape(body_height);
-  translate([5,0,-10])
-   scale([0.9,0.9,0.9])
-    uke_shape(body_height);
-  translate([5,0,10])
-   scale([0.9,0.9,0.9])
+  translate([4,0,-10])
+   scale([0.94,0.87,1.5])
     uke_shape(body_height);
  }
 }
