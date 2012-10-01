@@ -45,7 +45,7 @@ module scoop(volume_ml, thickness, squatness) {
 
 
 scoop(75, 3, 1);
-translate([100, 0, 0]) scoop(75, 3, 0.5);
-translate([0, 100, 0]) scoop(200, 4, 0.5);
-translate([-100, 0, 0]) scoop(75, 3, 1.5);
-translate([0, -100, 0]) scoop(200, 1, 1.5);
+//translate([100, 0, 0]) scoop(75, 3, 0.5);
+//translate([0, 100, 0]) scoop(200, 4, 0.5);
+//translate([-100, 0, 0]) scoop(75, 3, 1.5);
+//translate([0, -100, 0]) scoop(200, 1, 1.5);
