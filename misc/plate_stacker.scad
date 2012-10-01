@@ -9,16 +9,16 @@ outer_radius = inner_radius + thickness;
 height = 40;
 
 module punch() {
- translate([inner_radius - 3, 0,(height/2) + thickness + 1])
+ translate([inner_radius - 3, 0,(height) + thickness + 1])
   rotate([0,90,0])
    linear_extrude(height=thickness + 6)
-    circle(r=(height-thickness-2)/2, $fn=3);
+    circle(r=(height*2-thickness-2)/2, $fn=3);
 }
 module punch_up() {
  translate([inner_radius + 7, 0,(height/2) - thickness - 1])
  rotate([0,-90,0])
    linear_extrude(height=thickness + 6)
-    circle(r=(height-thickness-2)/2, $fn=3);
+    circle(r=(height  -thickness-2)/2, $fn=3);
 }
 
  difference() {
