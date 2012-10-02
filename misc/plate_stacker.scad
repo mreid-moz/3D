@@ -1,33 +1,33 @@
 
 
 // cylinder quality
-cq = 40;
+cq = 100;
 
-thickness = 4;
-inner_radius = 180;
-outer_radius = inner_radius + thickness;
+thickness = 5;
+outer_radius = 90;
+inner_radius = outer_radius - thickness;
 height = 40;
 
 module punch() {
- translate([inner_radius - 3, 0,(height) + thickness + 1])
+ translate([inner_radius - 3, 0,height-thickness*2])
   rotate([0,90,0])
    linear_extrude(height=thickness + 6)
-    circle(r=(height*2-thickness-2)/2, $fn=3);
+    circle(r=(height-thickness)/2 + 3, $fn=3);
 }
 module punch_up() {
  translate([inner_radius + 7, 0,(height/2) - thickness - 1])
  rotate([0,-90,0])
    linear_extrude(height=thickness + 6)
-    circle(r=(height  -thickness-2)/2, $fn=3);
+    circle(r=(height  -thickness)/2, $fn=3);
 }
 
  difference() {
    cylinder(r=outer_radius, h=height, $fn=cq);
    translate([0,0,-1]) cylinder(r=inner_radius, h=height + 2, $fn=cq);
-   for (z = [12 : 12 : 360]) {
+   for (z = [0 : 24 : 360]) {
     rotate([0,0,z]) punch();
    }
-   for (z = [6 : 12 : 360]) {
+   for (z = [12: 24 : 360]) {
     rotate([0,0,z]) punch_up();
    }
  }
