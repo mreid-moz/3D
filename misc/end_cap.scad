@@ -5,18 +5,19 @@
 // cylinder quality
 cq = 100;
 
+cap_thickness = 2;
 thickness = 3;
-cap_diameter = 70;
-outer_diameter = 60;
-cap_height = 15;
+overhang = 5;
+outer_diameter = 53;
+cap_height = 10;
 
-cap_radius = cap_diameter / 2;
 outer_radius = outer_diameter / 2;
+cap_radius = outer_radius + overhang;
 inner_radius = outer_radius - thickness;
 
-cylinder(r=cap_radius, h=thickness, $fn=cq);
+cylinder(r=cap_radius, h=cap_thickness, $fn=cq);
 
-translate([0,0,thickness])
+translate([0,0,cap_thickness])
  difference() {
    cylinder(r=outer_radius, h=cap_height, $fn=cq);
    cylinder(r=inner_radius, h=cap_height+1, $fn=cq);
