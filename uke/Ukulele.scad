@@ -179,23 +179,20 @@ module head() {
 module neck() {
  neck_x = -2 * neck_bottom_rad - front_thickness + 1;
  neck_z = small_offset + small_radius;
- difference() {
-  union() {
-   rotate([0, 90, 0])
-    translate([neck_x, 0, neck_z])
-     difference() {
-      cylinder(r1=neck_bottom_rad, r2=neck_top_rad, h=neck_length, $fn=quality);
-      translate([-2*neck_bottom_rad, -1*neck_bottom_rad, -1])
-       cube(size=[neck_bottom_rad * 2, neck_bottom_rad * 2, neck_length + 2]);
-     }
-  
-   translate([small_offset + small_radius, 0, 0])
-    cylinder(r2=neck_bottom_rad, r1=neck_bottom_rad * 0.3, h=body_height);
-   head();
-  }
+ rotate([0, 90, 0])
+  translate([neck_x, 0, neck_z])
+   difference() {
+    cylinder(r1=neck_bottom_rad, r2=neck_top_rad, h=neck_length, $fn=quality);
+    translate([-2*neck_bottom_rad, -1*neck_bottom_rad, -1])
+     cube(size=[neck_bottom_rad * 2, neck_bottom_rad * 2, neck_length + 2]);
+   }
 
+ difference() {
+  translate([small_offset + small_radius, 0, 0])
+   cylinder(r2=neck_bottom_rad, r1=neck_bottom_rad * 0.3, h=body_height);
   translate([0, 0, -0.5 * body_height]) sides();
  }
+ head();
 }
 
 module nut() {
