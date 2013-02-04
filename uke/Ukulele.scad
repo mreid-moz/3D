@@ -27,7 +27,16 @@ head_rad_big = 55;
 nut_thickness = 2;
 nut_height = 2;
 
-fretboard_thickness = 4;
+string_rad=1;
+body_length = 100;
+
+saddle_top_height = 7;
+saddle_top_width = 53;
+saddle_increment = (saddle_top_width - 14) / 2;
+string_block_length = 9;
+
+bridge_thickness = 3.3;
+
 module body() {
  back();
  front();
@@ -70,23 +79,63 @@ module front() {
  saddle();
 }
 
-module saddle() {
- color("green") {
-  translate([saddle_base_width / -2, saddle_base_length / -2, body_height+front_thickness])
-   cube(size=[saddle_base_width, saddle_base_length, saddle_base_height]);
- }
- translate([saddle_base_width / -2, 53 / -2, body_height+front_thickness])
-  cube(size=[9, 53, 7]);
- translate([saddle_base_width / 2 - 3.3, 53 / -2, body_height+front_thickness])
-  cube(size=[3.3, 53, 7]);
+module bridge() {
+ bridge_height = saddle_top_height - saddle_base_height;
+ translate([saddle_base_width / -2, saddle_top_width / -2, body_height + front_thickness + saddle_base_height]) {
+  /*
+  color("blue")
+    translate([saddle_base_width - bridge_thickness, 0, 0])
+     cube(size=[bridge_thickness, saddle_top_width, saddle_top_height]);
 
+   color("blue")
+    translate([saddle_base_width - bridge_thickness * 3 - 5, 0, 0])
+     cube(size=[bridge_thickness + 5, saddle_top_width, saddle_top_height]);
+   */
+   color("red")
+    translate([saddle_base_width - bridge_thickness * 2,0,0]) {
+     cube(size=[bridge_thickness, saddle_top_width, bridge_height]);
+     translate([bridge_thickness/2,0,bridge_height]) rotate([-90,0,0]) cylinder(r=bridge_thickness/2, h=saddle_top_width, $fn=body_quality);
+    }
+ }
+}
+
+module saddle() {
+ translate([saddle_base_width / -2, 0, body_height + front_thickness]) {
   difference() {
-   translate([saddle_base_width / -2 + 9, 53 / -2, body_height+front_thickness])
-    cube(size=[8.3, 53, 7]);
-   translate([saddle_base_width / -2 - 3, 53 / -2 - 1, body_height+front_thickness+8])
-    rotate([0,40,0])
-     cube(size=[15, 55, 15]);
+   union() {
+    color("green") {
+     translate([0, saddle_base_length / -2, 0])
+      cube(size=[saddle_base_width, saddle_base_length, saddle_base_height]);
+    }
+    translate([0, saddle_top_width / -2, 0])
+     cube(size=[string_block_length, saddle_top_width, saddle_top_height]);
+    translate([saddle_base_width - bridge_thickness, saddle_top_width / -2, 0])
+     cube(size=[bridge_thickness, saddle_top_width, saddle_top_height]);
+
+    difference() {
+     translate([saddle_base_width - bridge_thickness * 3 - 5, saddle_top_width / -2, 0])
+      cube(size=[bridge_thickness + 5, saddle_top_width, saddle_top_height]);
+     // TODO: parameterize this
+     translate([-3, saddle_top_width / -2 - 1, 8])
+      rotate([0, 40, 0])
+       cube(size=[15, 55, 15]);
+    }
+   }
+
+   translate([-1, 0, (saddle_top_height - saddle_base_height) / 2 + saddle_base_height]) {
+    string_hole(saddle_increment);
+    string_hole(saddle_increment/3);
+    string_hole(-saddle_increment/3);
+    string_hole(-saddle_increment);
+   }
   }
+ }
+}
+
+module string_hole(increment) {
+ translate([0,increment,0])
+  rotate([0, 90, 0])
+   #cylinder(r=string_rad, h=string_block_length + 2, $fn=body_quality);
 }
 
 module sides() {
@@ -144,6 +193,7 @@ module half_neck_base() {
 
 }
 
+/*
 body();
 
 //translate([-100,100,0])
@@ -151,4 +201,10 @@ difference() {
  neck();
  translate([0,0,-0.5*body_height]) sides();
 }
+*/
+
+saddle();
+
+bridge();
+//bridge();
 
