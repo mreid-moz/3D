@@ -14,6 +14,7 @@ saddle_base_width = 24;
 saddle_base_length = 80;
 saddle_base_height = 2;
 neck_bottom_rad = 21.35;
+neck_cone_base_ratio = 0.3;
 neck_top_rad = 17.45;
 neck_length = 150;
 quality = 80;
@@ -179,6 +180,8 @@ module head() {
 module neck() {
  neck_x = -2 * neck_bottom_rad - front_thickness + 1;
  neck_z = small_offset + small_radius;
+ neck_r1 = neck_bottom_rad * neck_cone_base_ratio;
+ neck_r2 = neck_bottom_rad;
  rotate([0, 90, 0])
   translate([neck_x, 0, neck_z])
    difference() {
@@ -189,33 +192,46 @@ module neck() {
 
  difference() {
   translate([small_offset + small_radius, 0, 0])
-   cylinder(r2=neck_bottom_rad, r1=neck_bottom_rad * 0.3, h=body_height);
+   cylinder(r1=neck_r1, r2=neck_r2, h=body_height, $fn=quality);
+
+  // Cut a hole to join the sides to the neck
   translate([0, 0, -0.5 * body_height]) sides();
  }
  head();
 }
 
 module nut() {
+ nut_x = neck_length + small_offset + small_radius;
+ nut_y = -neck_top_rad;
+ nut_z = body_height + front_thickness;
  color("red") {
-  translate([neck_length + small_offset + small_radius, neck_top_rad * -1, body_height + front_thickness]) {
-   cube(size=[nut_thickness,neck_top_rad * 2,nut_height]);
+  translate([nut_x, nut_y, nut_z]) {
+   cube(size=[nut_thickness, neck_top_rad * 2, nut_height]);
    difference() {
-    rotate([-90,0,0]) translate([0,nut_height * -1,0]) cylinder(r=nut_thickness, h=neck_top_rad * 2, $fn=quality);
-    translate([-nut_thickness, -1, 0]) cube(size=[nut_thickness,(neck_top_rad * 2) + 2,nut_height * 2]);
+    rotate([-90, 0, 0])
+     translate([0, -nut_height, 0])
+      cylinder(r=nut_thickness, h=neck_top_rad * 2, $fn=quality);
+
+    // Cut half of the cylinder off so we have a quarter-circle on top
+    translate([-nut_thickness, -1, 0])
+     cube(size=[nut_thickness, neck_top_rad * 2 + 2, nut_height * 2]);
    }
   }
  }
 }
 
 module half_neck_base() {
- translate([small_offset + small_radius, 0, body_height/2]) cylinder(r2=neck_bottom_rad, r1=neck_bottom_rad * 0.65, h=body_height / 2, $fn=quality);
-
+ // Calculate the radius half way up the cone:
+ neck_r1 = neck_bottom_rad * ((neck_cone_base_ratio + 1) / 2);
+ neck_r2 = neck_bottom_rad;
+ neck_h = body_height / 2;
+ translate([small_offset + small_radius, 0, body_height / 2])
+  cylinder(r1=neck_r1, r2=neck_r2, h=neck_h, $fn=quality);
 }
 
 module complete_uke() {
  body();
  neck();
- //saddle();
  nut();
  bridge();
 }
@@ -226,15 +242,15 @@ module complete_uke_exploded() {
  translate([0, 200, -body_height])
   front();
 
- translate([-neck_length - small_offset/2, -150, body_height + front_thickness])
+ translate([-215, -150, body_height + front_thickness])
   rotate([180, 0, 0])
    neck();
 
- translate([0, 0,-body_height - front_thickness]) {
-  translate([-neck_length - small_offset,100,0])
+ translate([0, 0, -body_height - front_thickness]) {
+  translate([-neck_length - small_offset, 100, 0])
    nut();
 
-  translate([80,100,-saddle_base_height])
+  translate([80, 100, -saddle_base_height])
    bridge();
  }
 }
@@ -250,4 +266,3 @@ module back_and_sides() {
 
 //complete_uke();
 complete_uke_exploded();
-
