@@ -26,7 +26,7 @@ head_rad_big = 55;
 nut_thickness = 2;
 nut_height = 2;
 
-string_rad=1;
+string_rad=1.5;
 body_length = 100;
 
 saddle_top_height = 5;
@@ -37,13 +37,14 @@ string_block_length = 9;
 bridge_thickness = 3.3;
 
 module body() {
- back();
+ back_and_sides();
  front();
-
+/*
  difference() {
   sides();
   half_neck_base();
  }
+ */
 }
 
 module uke_shape(thickness) {
@@ -165,15 +166,21 @@ module head() {
 }
 
 module neck() {
- rotate([0,90,0])
-  translate([-2*neck_bottom_radius - front_thickness + 1,0,small_offset + small_radius])
-   difference() {
-    cylinder(r1=neck_bottom_radius, r2=neck_top_radius, h=neck_length, $fn=quality);
-    translate([-2*neck_bottom_radius, -1*neck_bottom_radius, -1]) cube(size=[neck_bottom_radius * 2, neck_bottom_radius * 2, neck_length + 2]);
-   }
+ difference() {
+  union() {
+   rotate([0,90,0])
+    translate([-2*neck_bottom_radius - front_thickness + 1,0,small_offset + small_radius])
+     difference() {
+      cylinder(r1=neck_bottom_radius, r2=neck_top_radius, h=neck_length, $fn=quality);
+      translate([-2*neck_bottom_radius, -1*neck_bottom_radius, -1]) cube(size=[neck_bottom_radius * 2, neck_bottom_radius * 2, neck_length + 2]);
+     }
+  
+   translate([small_offset + small_radius, 0, 0]) cylinder(r2=neck_bottom_radius, r1=neck_bottom_radius * 0.3, h=body_height);
+   head();
+  }
 
- translate([small_offset + small_radius, 0, 0]) cylinder(r2=neck_bottom_radius, r1=neck_bottom_radius * 0.3, h=body_height);
- head();
+  translate([0,0,-0.5*body_height]) sides();
+ }
 }
 
 module nut() {
@@ -195,13 +202,10 @@ module half_neck_base() {
 
 module complete_uke() {
  body();
- difference() {
-  neck();
-  translate([0,0,-0.5*body_height]) sides();
- }
- saddle();
- bridge();
+ neck();
+ //saddle();
  nut();
+ bridge();
 }
 
 module complete_uke_exploded() {
@@ -224,7 +228,6 @@ module complete_uke_exploded() {
 }
 
 module back_and_sides() {
- // Part 1: just the back and sides
  back();
 
  difference() {
@@ -233,5 +236,6 @@ module back_and_sides() {
  }
 }
 
+//complete_uke();
 complete_uke_exploded();
 
