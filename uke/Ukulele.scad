@@ -177,6 +177,10 @@ module head() {
  }
 }
 
+module flat_head() {
+ rotate([0,-head_angle,0])
+  head();
+}
 module neck() {
  neck_x = -2 * neck_bottom_rad - front_thickness + 1;
  neck_z = small_offset + small_radius;
@@ -197,7 +201,7 @@ module neck() {
   // Cut a hole to join the sides to the neck
   translate([0, 0, -0.5 * body_height]) sides();
  }
- head();
+ //head();
 }
 
 module nut() {
@@ -236,23 +240,31 @@ module complete_uke() {
  bridge();
 }
 
-module complete_uke_exploded() {
- back_and_sides();
-
+module front_flat() {
  translate([0, 200, -body_height])
   front();
+}
 
+module neck_flat() {
  translate([-215, -150, body_height + front_thickness + 1])
   rotate([180, 0, 0])
    neck();
+}
 
+module nut_and_bridge_flat() {
  translate([0, 0, -body_height - front_thickness]) {
   translate([-neck_length - small_offset, 100, 0])
    nut();
-
   translate([80, 100, -saddle_base_height])
    bridge();
  }
+}
+
+module complete_uke_exploded() {
+ back_and_sides();
+ front_flat();
+ neck_flat();
+ nut_and_bridge_flat();
 }
 
 module back_and_sides() {
@@ -264,12 +276,32 @@ module back_and_sides() {
  }
 }
 
+
 //complete_uke();
+//rotate([0,0,-45])
+ scale([0.7,0.7,0.7]) {
+//  complete_uke_exploded();
+//  back_and_sides();
+//  front();
+//  neck();
+  nut_and_bridge_flat();
+//  bridge();
+}
+
+/*
 rotate([0,0,-45])
+ scale([0.7,0.7,0.7])
+  translate([-215, 0, body_height + front_thickness + 1])
+   rotate([180, 0, 0])
+    difference() {
+     neck();
+     #head();
+    }
+*/
+
+/*
+// Make the front face down so it's nice and smooth
 scale([0.7,0.7,0.7])
- complete_uke_exploded();
-// back_and_sides();
-// front();
-// neck();
-// nut();
-// bridge();
+ rotate([180,0,0])
+  flat_head();
+*/
