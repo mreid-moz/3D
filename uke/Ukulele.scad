@@ -242,7 +242,7 @@ module complete_uke_exploded() {
  translate([0, 200, -body_height])
   front();
 
- translate([-215, -150, body_height + front_thickness])
+ translate([-215, -150, body_height + front_thickness + 1])
   rotate([180, 0, 0])
    neck();
 
@@ -265,4 +265,11 @@ module back_and_sides() {
 }
 
 //complete_uke();
-complete_uke_exploded();
+rotate([0,0,-45])
+scale([0.7,0.7,0.7])
+ complete_uke_exploded();
+// back_and_sides();
+// front();
+// neck();
+// nut();
+// bridge();
