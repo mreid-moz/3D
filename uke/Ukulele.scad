@@ -177,9 +177,10 @@ module head() {
  }
 }
 
-module flat_head() {
- rotate([0,-head_angle,0])
-  head();
+module head_flat() {
+ translate([-neck_length - large_radius,-100,-115]) 
+  rotate([0,-head_angle,0])
+   head();
 }
 module neck() {
  neck_x = -2 * neck_bottom_rad - front_thickness + 1;
@@ -236,6 +237,7 @@ module half_neck_base() {
 module complete_uke() {
  body();
  neck();
+ head();
  nut();
  bridge();
 }
@@ -264,6 +266,7 @@ module complete_uke_exploded() {
  back_and_sides();
  front_flat();
  neck_flat();
+ head_flat();
  nut_and_bridge_flat();
 }
 
@@ -276,15 +279,29 @@ module back_and_sides() {
  }
 }
 
+module tuning_peg() {
+ diff_thick = head_thickness * 2;
+ peg_rad = 2;
+// translate([200,200,0]) {
+ difference() {
+  cylinder(r=peg_rad, h=head_thickness * 2, $fn=quality);
+  translate([1.5, -diff_thick / 2, 0]) #cube([diff_thick,diff_thick,diff_thick]);
+  translate([-diff_thick - 1.5, -diff_thick / 2, 0]) #cube([diff_thick,diff_thick,diff_thick]);
+ }
 
+// cylinder(r=peg_head_rad, h = 
+// }
+}
+
+//tuning_peg();
 //complete_uke();
 //rotate([0,0,-45])
  scale([0.7,0.7,0.7]) {
-//  complete_uke_exploded();
+  complete_uke_exploded();
 //  back_and_sides();
 //  front();
 //  neck();
-  nut_and_bridge_flat();
+//  nut_and_bridge_flat();
 //  bridge();
 }
 
@@ -303,5 +320,5 @@ rotate([0,0,-45])
 // Make the front face down so it's nice and smooth
 scale([0.7,0.7,0.7])
  rotate([180,0,0])
-  flat_head();
+  head_flat();
 */
