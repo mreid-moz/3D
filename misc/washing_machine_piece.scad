@@ -52,7 +52,7 @@ module p5() {
  difference() {
   p4();
   translate([47.49, 29.55, -1]) {
-   cube(size=[4, 30, thickness + 2]);
+   cube(size=[14, 30, thickness + 2]);
    translate([2,0,0]) cylinder(r=2, h=thickness + 2, $fn=cq);
   }
  }
@@ -66,20 +66,53 @@ module p5() {
 
 }
 
+// Stick-outy arm on the right top
 module p6() {
  translate([length - 2.3, 21, 0])
+//TODO:  rotate([0,0,-5])
   cube(size=[2.3, 28.55, 28]);
  translate([length - 1.75, 48, 2])
   cylinder(r=1.5, h=28, $fn=cq);
 }
 
-difference() {
- p5();
- translate([length - 5, 44, -15])
-  rotate([36,0,0])
-   translate([12,0,0])
-    rotate([0,-50,0])
-     cube(size=[9,20,15]);
- translate([length - 2.3, 49.5, -1])
-  #cube([10,10,10]);
+module p7() {
+ difference() {
+  p5();
+  translate([length - 5, 44, -15])
+   rotate([36,0,0])
+    translate([12,0,0])
+     rotate([0,-50,0])
+      cube(size=[9,20,15]);
+  translate([length - 2.3, 49.5, -1])
+   cube([10,10,10]);
+ }
+
+ difference() {
+  translate([inset + inset_xoff + inner_rad,width - 12,0])
+   rotate([0,0,10])
+    cube(size=[40, 12, 31]);
+  translate([inset_xoff, inset_yoff, -1]) {
+   cube(size=[22.5, width / 2, inset + 1]);
+   translate([21.8 - inset_xoff, width / 2 - 2 * inset_yoff, 0])
+    cube(size=[22.5, width / 2, inset + 1]);
+  }
+  translate([inset + inset_xoff + inner_rad,width - 12 - 1,thickness]) {
+   rotate([0,-45,10])
+    cube(size=[40, 14, 31]);
+ // translate([inset + inset_xoff + inner_rad,width - 12 - 1,thickness])
+   rotate([0,0,10])
+    cube(size=[20, 10, 31]);
+   translate([20,0,0])
+    rotate([0,-60,10])
+     cube(size=[40, 13, 31]);
+   translate([23,9,0])
+    rotate([0,-60,10])
+     cube(size=[40, 5, 31]);
+  }
+ }
+}
+
+intersection() {
+ p7();
+ translate([25,30,50]) sphere(r=60, $fn=100);
 }
