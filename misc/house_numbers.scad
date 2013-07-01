@@ -1,11 +1,11 @@
 tile_width         = 77;
 //tile_width         = 7;
-tile_height        = 113;
+tile_height        = 113 - 4; // correct for laziness (ie. lack of accuracy)
 tile_thickness     = 15.5;
 tile_lip_thickness = 7.4;
 tile_lip_depth     = 4.7;
 
-width_padding      = 7;
+width_padding      = 5;
 height_padding     = 7;
 thickness_padding  = 2.5;
 
@@ -46,10 +46,16 @@ module body() {
   }
 
   // Mounting holes:
-  translate([0,-tile_height/2 - thickness_padding,-outer_thickness/2-1])
+  translate([0,-tile_height/2 - thickness_padding,-outer_thickness/2-1]) {
    cylinder(r=2.5, h = outer_thickness + 2, $fn=30);
-  translate([0,tile_height/2 + thickness_padding,-outer_thickness/2-1])
+   translate([0,0,outer_thickness - 3])
+    cylinder(r1=0, r2=10, h = outer_thickness/2, $fn=30);
+  }
+  translate([0,tile_height/2 + thickness_padding,-outer_thickness/2-1]) {
    cylinder(r=2.5, h = outer_thickness + 2, $fn=30);
+   translate([0,0,outer_thickness - 3])
+    cylinder(r1=0, r2=10, h = outer_thickness/2, $fn=30);
+  }
 
 
   // Drainage holes:
@@ -84,11 +90,10 @@ module test() {
 
 
 //translate([-outer_width / 2 - 0, 0, -thickness_padding])
-//translate([10, 0, -tile_lip_thickness / 2 - 2.352])
 //translate([10, 0, -thickness_padding * 2 - 1])
- end_cap();
+// end_cap();
 
-//body();
+body();
 //translate([-tile_width, 0, 1]) tile();
 
 //test();
