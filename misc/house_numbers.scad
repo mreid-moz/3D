@@ -26,14 +26,27 @@ module tile() {
 // translate([tile_width + 1, 0, 0]) tile();
 //}
 
+module centred_xy_cube(xc, yc, xs, ys, zs) {
+ centred_cube(xc, yc, zs/2, xs, ys, zs);
+}
+
+module centred_cube(xc, yc, zc, xs, ys, zs) {
+ translate([xc, yc, zc])
+  translate([-xs/2, -ys/2, -zs/2])
+   cube(size=[xs, ys, zs]);
+}
+
 outer_width = tile_width * 2 + width_padding;
 outer_height = tile_height + height_padding;
 outer_thickness = tile_thickness + thickness_padding;
 drainage_offset = outer_width / 6;
 difference() {
  cube(size=[outer_width, outer_height, outer_thickness]);
- translate([-1, height_padding / 2,thickness_padding / 2])
-  #cube(size=[tile_width * 2 + (width_padding / 2) + 2, tile_height + 2, tile_thickness + 25]);
+ translate([-1, height_padding / 2 - 1,thickness_padding / 2]) {
+  #cube(size=[tile_width * 2 + (width_padding / 2) + 2, tile_height + 2, tile_lip_thickness + 2]);
+  translate([0,tile_lip_depth,tile_lip_thickness + 2])
+   #cube(size=[tile_width * 2 + (width_padding / 2) + 2, tile_height + 2 - tile_lip_depth * 2, tile_lip_thickness + 2]);
+ }
  translate([outer_width / 2,height_padding / 4 + 1,-1])
   #cylinder(r=2.5, h = outer_thickness + 2, $fn=30);
  translate([outer_width / 2,outer_height - (height_padding / 4) - 1,-1])
@@ -51,10 +64,10 @@ difference() {
  }
 }
 
-translate([0,height_padding/2 - 1,(thickness_padding / 2) + tile_lip_thickness + 2])
- cube(size=[outer_width,tile_lip_depth,outer_thickness - (thickness_padding / 2) - tile_lip_thickness - 2]);
-translate([0,outer_height - (height_padding/2) - tile_lip_depth + 1,(thickness_padding / 2) + tile_lip_thickness + 2])
- cube(size=[outer_width,tile_lip_depth + 2,outer_thickness - (thickness_padding / 2) - tile_lip_thickness - 2]);
+//translate([0,height_padding/2 - 1,(thickness_padding / 2) + tile_lip_thickness + 2])
+// cube(size=[outer_width,tile_lip_depth,outer_thickness - (thickness_padding / 2) - tile_lip_thickness - 2]);
+//translate([0,outer_height - (height_padding/2) - tile_lip_depth + 1,(thickness_padding / 2) + tile_lip_thickness + 2])
+// cube(size=[outer_width,tile_lip_depth + 2,outer_thickness - (thickness_padding / 2) - tile_lip_thickness - 2]);
 
 module end_cap() {
   cube(size=[width_padding / 2 - 2, tile_height + 2, tile_lip_thickness + 2]);
