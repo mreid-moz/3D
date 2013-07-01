@@ -5,19 +5,17 @@ tile_thickness     = 15.5;
 tile_lip_thickness = 7.4;
 tile_lip_depth     = 4.7;
 
-width_padding      = 15;
-height_padding     = 15;
-thickness_padding  = 5;
+width_padding      = 7;
+height_padding     = 7;
+thickness_padding  = 2.5;
 
 module tile() {
  difference() {
-  color("red") cube(size=[tile_width, tile_height, tile_thickness]);
-  translate([-1, 0, tile_lip_thickness]) {
-   translate([0, -1, 0])
-    cube(size=[tile_width + 2, tile_lip_depth + 1, (tile_thickness - tile_lip_thickness + 1)]);
-   translate([0, tile_height - tile_lip_depth, 0])
-    cube(size=[tile_width + 2, tile_lip_depth + 1, (tile_thickness - tile_lip_thickness + 1)]);
-  }
+  color("red") cube(size=[tile_width, tile_height, tile_thickness], center=true);
+  translate([0, tile_height / 2 - tile_lip_depth / 2, tile_lip_thickness / 2])
+   cube(size=[tile_width + 2, tile_lip_depth + 1, (tile_thickness - tile_lip_thickness + 1)], center=true);
+  translate([0, -tile_height/2 + tile_lip_depth / 2, tile_lip_thickness / 2])
+   cube(size=[tile_width + 2, tile_lip_depth + 1, (tile_thickness - tile_lip_thickness + 1)], center=true);
  }
 }
 
@@ -26,56 +24,71 @@ module tile() {
 // translate([tile_width + 1, 0, 0]) tile();
 //}
 
-module centred_xy_cube(xc, yc, xs, ys, zs) {
- centred_cube(xc, yc, zs/2, xs, ys, zs);
-}
-
-module centred_cube(xc, yc, zc, xs, ys, zs) {
- translate([xc, yc, zc])
-  translate([-xs/2, -ys/2, -zs/2])
-   cube(size=[xs, ys, zs]);
-}
-
-outer_width = tile_width * 2 + width_padding;
-outer_height = tile_height + height_padding;
-outer_thickness = tile_thickness + thickness_padding;
+outer_width = tile_width * 2 + width_padding * 2;
+outer_height = tile_height + height_padding * 2;
+outer_thickness = tile_thickness + thickness_padding * 2;
 drainage_offset = outer_width / 6;
-difference() {
- cube(size=[outer_width, outer_height, outer_thickness]);
- translate([-1, height_padding / 2 - 1,thickness_padding / 2]) {
-  #cube(size=[tile_width * 2 + (width_padding / 2) + 2, tile_height + 2, tile_lip_thickness + 2]);
-  translate([0,tile_lip_depth,tile_lip_thickness + 2])
-   #cube(size=[tile_width * 2 + (width_padding / 2) + 2, tile_height + 2 - tile_lip_depth * 2, tile_lip_thickness + 2]);
- }
- translate([outer_width / 2,height_padding / 4 + 1,-1])
-  #cylinder(r=2.5, h = outer_thickness + 2, $fn=30);
- translate([outer_width / 2,outer_height - (height_padding / 4) - 1,-1])
-  #cylinder(r=2.5, h = outer_thickness + 2, $fn=30);
- 
+xc1 = outer_width / 2 - width_padding / 2;
+yc1 = outer_height / 2;
+xs1 = tile_width * 2 + width_padding + 2;
+ys1 = tile_height + 2;
 
- translate([drainage_offset, -1, thickness_padding / 2 + tile_lip_thickness / 2]) {
-  cube(size=[3, 20, 3]);
-  translate([drainage_offset, 0, 0])
-   cube(size=[3, 20, 3]);
-  translate([drainage_offset * 3, 0, 0])
-   cube(size=[3, 20, 3]);
-  translate([drainage_offset * 4, 0, 0])
-   cube(size=[3, 20, 3]);
+module body() {
+ difference() {
+  // Main body:
+  cube(size=[outer_width, outer_height, outer_thickness], center=true);
+
+  // Tile spaces:
+  translate([-width_padding/2,0, -thickness_padding]) {
+   cube(size=[xs1, ys1, tile_lip_thickness + 2], center=true);
+   translate([0, 0, tile_lip_thickness + 2 - 1])
+    cube(size=[xs1, ys1 - tile_lip_depth * 2 - 2, tile_lip_thickness + 2], center=true);
+  }
+
+  // Mounting holes:
+  translate([0,-tile_height/2 - thickness_padding,-outer_thickness/2-1])
+   cylinder(r=2.5, h = outer_thickness + 2, $fn=30);
+  translate([0,tile_height/2 + thickness_padding,-outer_thickness/2-1])
+   cylinder(r=2.5, h = outer_thickness + 2, $fn=30);
+
+
+  // Drainage holes:
+  translate([-drainage_offset, -outer_height / 2-1, -thickness_padding - tile_lip_thickness / 4]) {
+   cube(size=[3, height_padding + 2, 3]);
+   translate([-drainage_offset, 0, 0])
+    cube(size=[3, height_padding + 2, 3]);
+   translate([drainage_offset * 3, 0, 0])
+    cube(size=[3, height_padding + 2, 3]);
+   translate([drainage_offset * 2, 0, 0])
+    cube(size=[3, height_padding + 2, 3]);
+  }
  }
 }
-
-//translate([0,height_padding/2 - 1,(thickness_padding / 2) + tile_lip_thickness + 2])
-// cube(size=[outer_width,tile_lip_depth,outer_thickness - (thickness_padding / 2) - tile_lip_thickness - 2]);
-//translate([0,outer_height - (height_padding/2) - tile_lip_depth + 1,(thickness_padding / 2) + tile_lip_thickness + 2])
-// cube(size=[outer_width,tile_lip_depth + 2,outer_thickness - (thickness_padding / 2) - tile_lip_thickness - 2]);
 
 module end_cap() {
-  cube(size=[width_padding / 2 - 2, tile_height + 2, tile_lip_thickness + 2]);
-  translate([0, tile_lip_depth, tile_lip_thickness + 2])
-   cube(size=[width_padding / 2 - 1, tile_height - (2 * tile_lip_depth), tile_thickness - tile_lip_thickness + 3]);
+  cube(size=[width_padding - 2, tile_height + 0.5, tile_lip_thickness + 1], center = true);
+  translate([0, 0, tile_lip_thickness])
+   cube(size=[width_padding - 2, tile_height - (2 * tile_lip_depth) - 1, tile_thickness - tile_lip_thickness + 3], center = true);
 }
 
-//translate([-20, height_padding / 2, thickness_padding / 2]) {
-//translate([-20, 0, 0]) {
-// end_cap();
-//}
+// Print out a small slice for size-testing.
+module test() {
+ difference() {
+  body();
+  translate([-35, 0, 0])
+   cube(size=[outer_width - 50,outer_height + 10,outer_thickness + 10], center=true);
+  translate([outer_width / 2 + 10, 0, 0])
+   cube(size=[outer_width - 50,outer_height + 10,outer_thickness + 10], center=true);
+ }
+}
+
+
+//translate([-outer_width / 2 - 0, 0, -thickness_padding])
+//translate([10, 0, -tile_lip_thickness / 2 - 2.352])
+//translate([10, 0, -thickness_padding * 2 - 1])
+ end_cap();
+
+//body();
+//translate([-tile_width, 0, 1]) tile();
+
+//test();
