@@ -28,10 +28,15 @@ outer_width = tile_width * 2 + width_padding * 2;
 outer_height = tile_height + height_padding * 2;
 outer_thickness = tile_thickness + thickness_padding * 2;
 drainage_offset = outer_width / 6;
-xc1 = outer_width / 2 - width_padding / 2;
-yc1 = outer_height / 2;
 xs1 = tile_width * 2 + width_padding + 2;
 ys1 = tile_height + 2;
+
+grille_rows = 10;
+grille_cols = 7;
+grille_spacing = 12;
+grille_rad = 5;
+grille_xoff = (outer_width - (grille_rows * (grille_spacing))) / 2;
+grille_yoff = (outer_height - (grille_cols * (grille_spacing))) / 2;
 
 module body() {
  difference() {
@@ -67,6 +72,17 @@ module body() {
     cube(size=[3, height_padding + 2, 3]);
    translate([drainage_offset * 2, 0, 0])
     cube(size=[3, height_padding + 2, 3]);
+  }
+
+  // Grille:
+  translate([-outer_width/2 + grille_xoff, -outer_height/2 + grille_yoff, -outer_thickness / 2 - 1]) {
+   for ( row = [0 : grille_rows] ) {
+    for ( col = [0 : grille_cols] ) {
+     translate([row * grille_spacing, col * grille_spacing, 0])
+      rotate([0,0,45])
+       cylinder(r=grille_rad, h=outer_thickness + 2, $fn=4);
+    }
+   }
   }
  }
 }
