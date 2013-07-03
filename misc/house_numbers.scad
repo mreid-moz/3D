@@ -31,10 +31,10 @@ drainage_offset = outer_width / 6;
 xs1 = tile_width * 2 + width_padding + 2;
 ys1 = tile_height + 2;
 
-grille_rows = 10;
-grille_cols = 7;
+grille_rows = 11;
+grille_cols = 8;
 grille_spacing = 12;
-grille_rad = 5;
+grille_rad = 4;
 grille_xoff = (outer_width - (grille_rows * (grille_spacing))) / 2;
 grille_yoff = (outer_height - (grille_cols * (grille_spacing))) / 2;
 
@@ -75,13 +75,10 @@ module body() {
   }
 
   // Grille:
-  translate([-outer_width/2 + grille_xoff, -outer_height/2 + grille_yoff, -outer_thickness / 2 - 1]) {
+  translate([-outer_width/2 + grille_xoff, 0, 0]) {
    for ( row = [0 : grille_rows] ) {
-    for ( col = [0 : grille_cols] ) {
-     translate([row * grille_spacing, col * grille_spacing, 0])
-      rotate([0,0,45])
-       cylinder(r=grille_rad, h=outer_thickness + 2, $fn=4);
-    }
+     translate([row * grille_spacing, 0, 0])
+      #cube(size=[grille_rad * 2, grille_cols * (grille_spacing), outer_thickness + 2], center=true);
    }
   }
  }
