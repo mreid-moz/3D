@@ -4,10 +4,18 @@ amp_depth = 40;
 speaker_radius = 20;
 speaker_diam = speaker_radius * 2;
 
+grille_rows = 10;
+grille_cols = grille_rows;
+
 front_bevel_width = 5;
 
 inner_height = amp_height - 2 * front_bevel_width;
 inner_width = amp_width - 2 * front_bevel_width;
+inner_front_height = inner_height - 2 * front_bevel_width;
+inner_front_width = inner_width - 2 * front_bevel_width;
+
+grille_spacing = (inner_front_width / grille_rows);
+
 
 // From elmom here: https://github.com/elmom/MCAD/blob/master/regular_shapes.scad
 module square_pyramid(base_x, base_y,height)
@@ -28,24 +36,46 @@ module screw_hole(xoff, zoff) {
 module cab() {
  difference() {
   cube(size=[amp_width, amp_depth, amp_height]);
+  /*
   translate([inner_width/2 + front_bevel_width, -1, inner_height/2 + front_bevel_width])
    rotate(a=[-90,0,0])
     square_pyramid(inner_width+front_bevel_width,inner_height+front_bevel_width,15);
+  */
+
+  /*
+  for ( row = [0 : grille_rows] ) {
+   for ( col = [0 : grille_cols] ) {
+    translate([front_bevel_width * 2 + row * grille_spacing, -1, front_bevel_width * 2 + col * grille_spacing])
+     rotate([-90,0,0])
+      cylinder(r=2, h=amp_depth - front_bevel_width - 2, $fn=4);
+   }
+  }
+
+  for ( row2 = [0 : (grille_rows - 1)] ) {
+   for ( col2 = [0 : (grille_cols - 1)] ) {
+    translate([front_bevel_width * 2 + grille_spacing / 2 + row2 * grille_spacing, -1, front_bevel_width * 2 + grille_spacing / 2 + col2 * grille_spacing])
+     rotate([-90,0,0])
+      cylinder(r=2, h=amp_depth - front_bevel_width - 2, $fn=4);
+   }
+  }
+  */
+  translate([front_bevel_width * 2, -1, front_bevel_width * 2])
+   #cube(size=[inner_front_width, amp_depth/2, inner_front_height]);
   translate([front_bevel_width, front_bevel_width-3, front_bevel_width])
    cube(size=[inner_width, amp_depth+2, inner_height]);
-  translate([front_bevel_width*2, amp_depth/2, amp_height-front_bevel_width+2])
-   cube(size=[inner_width - 2 * front_bevel_width, amp_depth, front_bevel_width]);
+  translate([front_bevel_width*2, amp_depth/2, amp_height-front_bevel_width+1.5])
+   #cube(size=[inner_width - 2 * front_bevel_width, amp_depth, front_bevel_width]);
   translate([front_bevel_width - 2, amp_depth - front_bevel_width, front_bevel_width])
    cube(size=[inner_width + 4, front_bevel_width+1, inner_height]);
   translate([amp_width - 49, amp_depth - 12, amp_height - 10])
-   #cylinder(r=3, h=amp_depth - front_bevel_width - 2, $fn=20);
+   cylinder(r=3, h=amp_depth - front_bevel_width - 2, $fn=20);
   translate([amp_width - 38, amp_depth - 12, amp_height - 10])
-   #cylinder(r=5.5, h=amp_depth - front_bevel_width - 2, $fn=20);
+   cylinder(r=5.5, h=amp_depth - front_bevel_width - 2, $fn=20);
   translate([amp_width - 22, amp_depth - 12, amp_height - 10])
-   #cylinder(r=4, h=amp_depth - front_bevel_width - 2, $fn=20);
+   cylinder(r=4, h=amp_depth - front_bevel_width - 2, $fn=20);
   translate([amp_width - front_bevel_width - 1, amp_depth - 11, inner_height - 13])
    rotate([0,90,0])
-    #cylinder(r=2.5, h=amp_depth - front_bevel_width - 2, $fn=20);
+    cylinder(r=2.5, h=amp_depth - front_bevel_width - 2, $fn=20);
  }
  screw_hole(0, 10);
  screw_hole(inner_width, 10);
@@ -87,7 +117,7 @@ module innards() {
  }
 }
 
-//rotate([90,0,0])
- cab();
-//back();
+rotate([90,0,0])
+// cab();
+back();
 //innards();
