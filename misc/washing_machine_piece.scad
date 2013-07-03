@@ -20,7 +20,7 @@ module p1() {
 module p2() {
  intersection() {
   p1();
-  translate([length/2, width/2, -1]) cylinder(r=width/2 + 2, h=thickness+2, $fn=cq);
+  translate([length/2 - 3, width/2, -1]) cylinder(r=width/2 + 2, h=thickness+2, $fn=cq);
  }
 }
 
