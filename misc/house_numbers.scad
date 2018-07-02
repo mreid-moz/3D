@@ -85,9 +85,9 @@ module body() {
 }
 
 module end_cap() {
-  cube(size=[width_padding - 2, tile_height + 0.5, tile_lip_thickness + 1], center = true);
+  cube(size=[width_padding, tile_height + 0.5, tile_lip_thickness + 1], center = true);
   translate([0, 0, tile_lip_thickness])
-   cube(size=[width_padding - 2, tile_height - (2 * tile_lip_depth) - 1, tile_thickness - tile_lip_thickness + 3], center = true);
+   cube(size=[width_padding, tile_height - (2 * tile_lip_depth) - 1, tile_thickness - tile_lip_thickness + 3], center = true);
 }
 
 // Print out a small slice for size-testing.
@@ -102,11 +102,10 @@ module test() {
 }
 
 
-//translate([-outer_width / 2 - 0, 0, -thickness_padding])
-//translate([10, 0, -thickness_padding * 2 - 1])
-// end_cap();
+//translate([outer_width / 2 - 2, 10, -thickness_padding])
+ end_cap();
 
-body();
+//body();
 //translate([-tile_width, 0, 1]) tile();
 
 //test();

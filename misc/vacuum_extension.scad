@@ -12,7 +12,7 @@ top_outer_rad = top_outer_diam / 2;
 top_inner_diam = 26.72;
 top_inner_rad = top_inner_diam / 2;
 
-height = 80;
+height = 170;
 
 feet_stick_out = 0.4;
 feet_width = 3.14;
